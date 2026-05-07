@@ -24,7 +24,7 @@ app_group = main_group.new_group(PROJECT_NAME, PROJECT_NAME)
 models_group = app_group.new_group('Models', 'Models')
 services_group = app_group.new_group('Services', 'Services')
 views_group = app_group.new_group('Views', 'Views')
-components_group = views_group.new_group('Components', 'Views/Components')
+components_group = views_group.new_group('Components', 'Components')
 
 def add_sources(group, target, names)
   names.each do |name|
@@ -71,7 +71,7 @@ add_sources(components_group, target, [
 assets_ref = app_group.new_file('Assets.xcassets')
 target.add_file_references([assets_ref])
 privacy_ref = app_group.new_file('PrivacyInfo.xcprivacy')
-target.add_file_references([privacy_ref])
+target.add_resources([privacy_ref])
 app_group.new_file('Info.plist')
 
 project.save
