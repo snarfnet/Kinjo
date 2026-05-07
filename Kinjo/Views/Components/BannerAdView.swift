@@ -8,23 +8,22 @@ struct BannerAdView: UIViewRepresentable {
         self.adUnitID = adUnitID
     }
 
-    func makeUIView(context: Context) -> GADBannerView {
-        let banner = GADBannerView(adSize: GADAdSizeBanner)
+    func makeUIView(context: Context) -> BannerView {
+        let banner = BannerView(adSize: AdSizeBanner)
         banner.adUnitID = adUnitID
         banner.rootViewController = context.coordinator.rootViewController
         banner.delegate = context.coordinator
-        banner.load(GADRequest())
+        banner.load(Request())
         return banner
     }
 
-    func updateUIView(_ uiView: GADBannerView, context: Context) {}
+    func updateUIView(_ uiView: BannerView, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
 
-    final class Coordinator: NSObject, GADBannerViewDelegate {
-        /// Find the root view controller for presenting ads
+    final class Coordinator: NSObject, BannerViewDelegate {
         var rootViewController: UIViewController? {
             UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
@@ -33,14 +32,13 @@ struct BannerAdView: UIViewRepresentable {
                 .rootViewController
         }
 
-        func bannerView(_ bannerView: GADBannerView,
+        func bannerView(_ bannerView: BannerView,
                         didFailToReceiveAdWithError error: Error) {
             print("[AdMob] Banner failed: \(error.localizedDescription)")
         }
     }
 }
 
-/// Fixed-height container for banner ads, with a warm cream background fallback
 struct BannerAdContainer: View {
     let adUnitID: String
 
