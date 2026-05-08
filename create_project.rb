@@ -69,7 +69,7 @@ add_sources(components_group, target, [
 ])
 
 assets_ref = app_group.new_file('Assets.xcassets')
-target.add_file_references([assets_ref])
+target.add_resources([assets_ref])
 privacy_ref = app_group.new_file('PrivacyInfo.xcprivacy')
 target.add_resources([privacy_ref])
 app_group.new_file('Info.plist')

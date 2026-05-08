@@ -22,7 +22,7 @@ jobs:
         run: |
           BUILD_NUMBER=$(( ${{ github.run_number }} + 3 ))
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
-          echo "APP_VERSION=1.2" >> $GITHUB_ENV
+          echo "APP_VERSION=1.3" >> $GITHUB_ENV
 
       - name: Import Distribution Certificate
         env:
@@ -99,7 +99,7 @@ jobs:
         env:
           ASC_KEY_ID: WDXGY9WX55
           ASC_ISSUER_ID: 2be0734f-943a-4d61-9dc9-5d9045c46fec
-          APP_VERSION: "1.2"
+          APP_VERSION: "1.3"
           SCREENSHOT_DIR: AppStoreScreenshots
         run: python3 scripts/upload_screenshots.py
 
@@ -108,6 +108,6 @@ jobs:
         env:
           ASC_KEY_ID: WDXGY9WX55
           ASC_ISSUER_ID: 2be0734f-943a-4d61-9dc9-5d9045c46fec
-          APP_VERSION: "1.2"
+          APP_VERSION: "1.3"
           BUILD_NUMBER: ${{ env.BUILD_NUMBER }}
         run: python3 scripts/submit.py
