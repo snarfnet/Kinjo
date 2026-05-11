@@ -8,33 +8,17 @@ struct BannerAdView: UIViewRepresentable {
         self.adUnitID = adUnitID
     }
 
-    func makeUIView(context: Context) -> BannerView {
-        let banner = BannerView(adSize: AdSizeBanner)
+    func makeUIView(context: Context) -> GADBannerView {
+        let banner = GADBannerView(adSize: GADAdSizeBanner)
         banner.adUnitID = adUnitID
-        banner.rootViewController = context.coordinator.rootViewController
-        banner.delegate = context.coordinator
-        banner.load(Request())
         return banner
     }
 
-    func updateUIView(_ uiView: BannerView, context: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    final class Coordinator: NSObject, BannerViewDelegate {
-        var rootViewController: UIViewController? {
-            UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap { $0.windows }
-                .first { $0.isKeyWindow }?
-                .rootViewController
-        }
-
-        func bannerView(_ bannerView: BannerView,
-                        didFailToReceiveAdWithError error: Error) {
-            print("[AdMob] Banner failed: \(error.localizedDescription)")
+    func updateUIView(_ uiView: GADBannerView, context: Context) {
+        guard uiView.rootViewController == nil else { return }
+        if let rootVC = uiView.window?.rootViewController {
+            uiView.rootViewController = rootVC
+            uiView.load(GADRequest())
         }
     }
 }

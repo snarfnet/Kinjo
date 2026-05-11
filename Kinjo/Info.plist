@@ -30,6 +30,8 @@
     <array>
         <string>UIInterfaceOrientationPortrait</string>
     </array>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>パーソナライズされた広告を表示するために使用します</string>
     <key>SKAdNetworkItems</key>
     <array>
         <dict>
