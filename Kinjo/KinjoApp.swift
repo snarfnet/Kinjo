@@ -8,7 +8,7 @@ struct KinjoApp: App {
     @State private var attRequested = false
 
     init() {
-        GADMobileAds.sharedInstance.start(completionHandler: nil)
+        MobileAds.shared.start(completionHandler: nil)
     }
 
     var body: some Scene {
