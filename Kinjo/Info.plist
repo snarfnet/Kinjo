@@ -21,9 +21,9 @@
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
     <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-9404799280370656~XXXXXXXXXX</string>
+    <string>ca-app-pub-9404799280370656~9892636222</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>近くの天気、交通、ニュースを表示するために現在地を使います。</string>
+    <string>近くの天気、交通、ニュースを表示するために現在地を使用します。</string>
     <key>UIRequiresFullScreen</key>
     <true/>
     <key>UISupportedInterfaceOrientations</key>
@@ -31,7 +31,7 @@
         <string>UIInterfaceOrientationPortrait</string>
     </array>
     <key>NSUserTrackingUsageDescription</key>
-    <string>パーソナライズされた広告を表示するために使用します</string>
+    <string>関連性の高い広告を表示するために使用します。</string>
     <key>SKAdNetworkItems</key>
     <array>
         <dict>
