@@ -44,7 +44,7 @@ struct HomeView: View {
             locationService.requestPermission()
             await loadAll()
         }
-        .onChange(of: locationService.cityName) { _, newCity in
+        .onReceive(locationService.$cityName.dropFirst()) { newCity in
             guard !newCity.isEmpty, newCity != "現在地", newCity != loadedCity else { return }
             Task { await loadAll() }
         }
