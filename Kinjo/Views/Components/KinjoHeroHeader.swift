@@ -31,6 +31,8 @@ struct KinjoHeroHeader: View {
                 HStack(spacing: KinjoSpacing.xs) {
                     Image(systemName: "location.fill")
                     Text(cityName.isEmpty ? "現在地" : cityName)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(.white.opacity(0.9))
@@ -40,9 +42,12 @@ struct KinjoHeroHeader: View {
                 .clipShape(Capsule())
 
                 Text("近所")
-                    .font(.system(size: 44, weight: .heavy, design: .rounded))
+                    .font(.system(size: 40, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
                     .shadow(color: .black.opacity(0.25), radius: 8, x: 0, y: 4)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .padding(.vertical, 2)
 
                 Text(greeting)
                     .font(.system(size: 16, weight: .semibold, design: .rounded))

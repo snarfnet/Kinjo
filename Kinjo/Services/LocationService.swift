@@ -5,7 +5,7 @@ import Foundation
 @MainActor
 final class LocationService: NSObject, ObservableObject {
     @Published var location: CLLocation?
-    @Published var cityName: String = "東京"
+    @Published var cityName: String = "現在地"
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published var isLocating = false
 
@@ -19,7 +19,18 @@ final class LocationService: NSObject, ObservableObject {
     }
 
     func requestPermission() {
-        manager.requestWhenInUseAuthorization()
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            startUpdating()
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .denied, .restricted:
+            cityName = "東京"
+            isLocating = false
+        @unknown default:
+            cityName = "東京"
+            isLocating = false
+        }
     }
 
     func startUpdating() {

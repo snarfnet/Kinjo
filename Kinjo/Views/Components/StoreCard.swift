@@ -14,7 +14,7 @@ struct StoreCard: View {
                 .frame(height: 130)
                 .clipShape(RoundedRectangle(cornerRadius: KinjoRadius.lg, style: .continuous))
 
-            ForEach(items.prefix(5)) { item in
+            ForEach(items.prefix(12)) { item in
                 Button {
                     if let url = URL(string: item.link) {
                         openURL(url)

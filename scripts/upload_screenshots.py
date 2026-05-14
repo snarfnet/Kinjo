@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(__file__))
 from asc_api import api, find_app_id, get_or_create_version, get_localization_id
 
-APP_VERSION = os.environ.get("APP_VERSION", "1.2")
+APP_VERSION = os.environ.get("APP_VERSION", "1.4")
 SCREENSHOT_DIR = Path(os.environ.get("SCREENSHOT_DIR", "AppStoreScreenshots"))
 
 DISPLAY_TYPES = {

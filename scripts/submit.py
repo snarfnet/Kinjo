@@ -3,7 +3,7 @@ import time
 
 from asc_api import api, find_app_id, get_or_create_version, get_localization_id
 
-APP_VERSION = os.environ.get("APP_VERSION", "1.3")
+APP_VERSION = os.environ.get("APP_VERSION", "1.4")
 BUILD_NUMBER = os.environ.get("BUILD_NUMBER", "")
 REVIEW_CONTACT = {
     "contactFirstName": "Tokyo",
@@ -44,9 +44,11 @@ def update_review_detail(version_id):
         "demoAccountName": "",
         "demoAccountPassword": "",
         "notes": (
-            "This build fixes a launch crash caused by an invalid AdMob application identifier. "
-            "Google Mobile Ads is now started only after the app appears and the ATT prompt is requested. "
-            "The app was rebuilt for iPad review."
+            "This build fixes production data issues reported by users. "
+            "Local news now reloads after the actual current city is resolved, filters out placeholder example.com links, "
+            "and shows up to 20 nearby news articles instead of only a few items. "
+            "Screens that fail to load live data no longer show old mock content from other regions. "
+            "The top hero title was also adjusted so the app name remains fully visible."
         ),
     }
     review_details = api("GET", f"/appStoreVersions/{version_id}/appStoreReviewDetail")
@@ -199,7 +201,7 @@ def main():
                     "data": {
                         "type": "appStoreVersionLocalizations",
                         "id": loc_id,
-                        "attributes": {"whatsNew": "起動時の安定性を改善しました。"},
+                        "attributes": {"whatsNew": "現在地に合うニュース表示を改善し、記事数を増やしました。表示崩れとダミーリンクも修正しました。"},
                     }
                 },
             )

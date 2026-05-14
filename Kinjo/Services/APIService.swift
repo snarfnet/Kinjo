@@ -68,9 +68,12 @@ final class APIService {
         return try await fetch("/api/earthquakes")
     }
 
-    func fetchNews(city: String) async throws -> [NewsItem] {
+    func fetchNews(city: String, limit: Int = 50) async throws -> [NewsItem] {
         if isPreview { return MockData.news }
-        return try await fetch("/api/news", queryItems: [URLQueryItem(name: "city", value: city)])
+        return try await fetch("/api/news", queryItems: [
+            URLQueryItem(name: "city", value: city),
+            URLQueryItem(name: "limit", value: String(limit))
+        ])
     }
 
     func fetchTrains() async throws -> [TrainItem] {
@@ -145,10 +148,10 @@ enum MockData {
     ]
 
     static let news = [
-        NewsItem(id: "n1", title: "区内の公園に見守り灯を増設。夜の帰り道を明るく", source: "地域ニュース", url: "https://example.com/1", publishedAt: "2026-05-08T06:00:00Z", description: "通学路と駅前通りを中心に整備が進みます。"),
-        NewsItem(id: "n2", title: "週末は駅前広場で防災フェア。親子で備えを確認", source: "自治体広報", url: "https://example.com/2", publishedAt: "2026-05-08T05:30:00Z", description: nil),
-        NewsItem(id: "n3", title: "商店街で朝市を開催。地元野菜と焼きたてパンが並ぶ予定", source: "街の掲示板", url: "https://example.com/3", publishedAt: "2026-05-07T23:45:00Z", description: nil),
-        NewsItem(id: "n4", title: "駅前道路の一部で夜間工事。歩行ルートを確認してください", source: "交通情報", url: "https://example.com/4", publishedAt: "2026-05-07T20:00:00Z", description: nil)
+        NewsItem(id: "n1", title: "区内の公園に見守り灯を増設。夜の帰り道を明るく", source: "地域ニュース", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E5%85%AC%E5%9C%92", publishedAt: "2026-05-08T06:00:00Z", description: "通学路と駅前通りを中心に整備が進みます。"),
+        NewsItem(id: "n2", title: "週末は駅前広場で防災フェア。親子で備えを確認", source: "自治体広報", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E9%98%B2%E7%81%BD", publishedAt: "2026-05-08T05:30:00Z", description: nil),
+        NewsItem(id: "n3", title: "商店街で朝市を開催。地元野菜と焼きたてパンが並ぶ予定", source: "街の掲示板", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E5%95%86%E5%BA%97%E8%A1%97", publishedAt: "2026-05-07T23:45:00Z", description: nil),
+        NewsItem(id: "n4", title: "駅前道路の一部で夜間工事。歩行ルートを確認してください", source: "交通情報", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E9%81%93%E8%B7%AF%E5%B7%A5%E4%BA%8B", publishedAt: "2026-05-07T20:00:00Z", description: nil)
     ]
 
     static let trains = [
@@ -174,8 +177,8 @@ enum MockData {
         season: "sakura",
         keyword: "東京 桜",
         items: [
-            SakuraItem(title: "近くの公園で新緑が見頃。散歩にちょうどよい季節です", link: "https://example.com/sakura1", pubDate: "2026-05-07T09:00:00Z", source: "散歩情報"),
-            SakuraItem(title: "春の花壇整備ボランティアを募集", link: "https://example.com/sakura2", pubDate: "2026-05-06T12:00:00Z", source: "地域掲示板")
+            SakuraItem(title: "近くの公園で新緑が見頃。散歩にちょうどよい季節です", link: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E5%85%AC%E5%9C%92%20%E6%95%A3%E6%AD%A9", pubDate: "2026-05-07T09:00:00Z", source: "散歩情報"),
+            SakuraItem(title: "春の花壇整備ボランティアを募集", link: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E8%8A%B1%E5%A3%87", pubDate: "2026-05-06T12:00:00Z", source: "地域掲示板")
         ]
     )
 
@@ -198,13 +201,13 @@ enum MockData {
     )
 
     static let stores = [
-        StoreItem(id: "s1", title: "駅前に新しいベーカリーがオープン", type: "open", link: "https://example.com/store1", source: "街の掲示板", relativeDate: "2日前"),
-        StoreItem(id: "s2", title: "商店街のカフェが改装のため一時休業", type: "renovate", link: "https://example.com/store2", source: "地域情報", relativeDate: "5日前")
+        StoreItem(id: "s1", title: "駅前に新しいベーカリーがオープン", type: "open", link: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E9%96%8B%E5%BA%97", source: "街の掲示板", relativeDate: "2日前"),
+        StoreItem(id: "s2", title: "商店街のカフェが改装のため一時休業", type: "renovate", link: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E6%94%B9%E8%A3%85", source: "地域情報", relativeDate: "5日前")
     ]
 
     static let events = [
-        EventItem(id: "e1", title: "公園マルシェ", place: "中央公園", startDate: "2026-05-10", endDate: "2026-05-10", category: "マルシェ", url: "https://example.com/ev1"),
-        EventItem(id: "e2", title: "親子防災ワークショップ", place: "区民センター", startDate: "2026-05-12", endDate: nil, category: "防災", url: "https://example.com/ev2"),
+        EventItem(id: "e1", title: "公園マルシェ", place: "中央公園", startDate: "2026-05-10", endDate: "2026-05-10", category: "マルシェ", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E3%83%9E%E3%83%AB%E3%82%B7%E3%82%A7"),
+        EventItem(id: "e2", title: "親子防災ワークショップ", place: "区民センター", startDate: "2026-05-12", endDate: nil, category: "防災", url: "https://news.google.com/search?q=%E8%BF%91%E6%89%80%20%E9%98%B2%E7%81%BD%20%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88"),
         EventItem(id: "e3", title: "商店街スタンプラリー", place: "駅前商店街", startDate: "2026-05-15", endDate: "2026-05-18", category: "地域", url: nil)
     ]
 }

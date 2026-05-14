@@ -95,7 +95,7 @@ enum TrainStatus: String, Codable {
     }
 }
 
-struct OnThisDay: Codable {
+struct OnThisDay: Decodable {
     let date: String
     let specialDays: [String]
     let tenYearsAgo: [HistoryEvent]
@@ -103,17 +103,63 @@ struct OnThisDay: Codable {
     let notable: [HistoryEvent]
 
     enum CodingKeys: String, CodingKey {
-        case date, notable
+        case date, notable, events
         case specialDays = "special_days"
         case tenYearsAgo = "ten_years_ago"
         case hundredYearsAgo = "hundred_years_ago"
     }
+
+    init(
+        date: String,
+        specialDays: [String],
+        tenYearsAgo: [HistoryEvent],
+        hundredYearsAgo: [HistoryEvent],
+        notable: [HistoryEvent]
+    ) {
+        self.date = date
+        self.specialDays = specialDays
+        self.tenYearsAgo = tenYearsAgo
+        self.hundredYearsAgo = hundredYearsAgo
+        self.notable = notable
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        date = try container.decodeIfPresent(String.self, forKey: .date) ?? ""
+        specialDays = try container.decodeIfPresent([String].self, forKey: .specialDays) ?? []
+        tenYearsAgo = try container.decodeIfPresent([HistoryEvent].self, forKey: .tenYearsAgo) ?? []
+        hundredYearsAgo = try container.decodeIfPresent([HistoryEvent].self, forKey: .hundredYearsAgo) ?? []
+        let notableItems = try container.decodeIfPresent([HistoryEvent].self, forKey: .notable) ?? []
+        let eventItems = try container.decodeIfPresent([HistoryEvent].self, forKey: .events) ?? []
+        notable = notableItems + eventItems
+    }
 }
 
-struct HistoryEvent: Codable, Identifiable {
+struct HistoryEvent: Decodable, Identifiable {
     let id: String
     let year: Int
     let description: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, year, description, title, text, event
+    }
+
+    init(id: String, year: Int, description: String) {
+        self.id = id
+        self.year = year
+        self.description = description
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        year = try container.decodeIfPresent(Int.self, forKey: .year) ?? 0
+        description = try container.decodeIfPresent(String.self, forKey: .description)
+            ?? container.decodeIfPresent(String.self, forKey: .title)
+            ?? container.decodeIfPresent(String.self, forKey: .text)
+            ?? container.decodeIfPresent(String.self, forKey: .event)
+            ?? ""
+    }
 }
 
 struct EventItem: Codable, Identifiable {
@@ -225,6 +271,12 @@ extension String {
         }
         formatter.formatOptions = [.withInternetDateTime]
         if let date = formatter.date(from: self) {
+            return date.relativeJapanese()
+        }
+        let rfc = DateFormatter()
+        rfc.locale = Locale(identifier: "en_US_POSIX")
+        rfc.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        if let date = rfc.date(from: self) {
             return date.relativeJapanese()
         }
         return self

@@ -8,7 +8,7 @@ struct EventCard: View {
         VStack(alignment: .leading, spacing: KinjoSpacing.md) {
             KinjoCardHeader(title: "近くのイベント", subtitle: "週末の予定を探しやすく", icon: "calendar", tint: .kinjoGreen)
 
-            ForEach(items.prefix(4)) { item in
+            ForEach(items.prefix(12)) { item in
                 Button {
                     if let urlString = item.url, let url = URL(string: urlString) {
                         openURL(url)

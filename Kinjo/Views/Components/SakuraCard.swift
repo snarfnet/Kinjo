@@ -8,7 +8,7 @@ struct SakuraCard: View {
         VStack(alignment: .leading, spacing: KinjoSpacing.md) {
             KinjoCardHeader(title: data.season == "koyo" ? "紅葉と散歩" : "季節の散歩", subtitle: "近くの花や公園の話題", icon: "leaf.fill", tint: .kinjoGreen)
 
-            ForEach(Array(data.items.prefix(3).enumerated()), id: \.offset) { _, item in
+            ForEach(Array(data.items.prefix(8).enumerated()), id: \.offset) { _, item in
                 Button {
                     if let url = URL(string: item.link) {
                         openURL(url)

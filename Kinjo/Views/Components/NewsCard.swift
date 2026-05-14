@@ -8,7 +8,7 @@ struct NewsCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: KinjoSpacing.md) {
-            KinjoCardHeader(title: title, subtitle: "暮らしに関わる話題を拾います", icon: "newspaper.fill", tint: .kinjoCoral)
+            KinjoCardHeader(title: "\(title) \(items.count)件", subtitle: "暮らしに関わる話題をまとめて表示します", icon: "newspaper.fill", tint: .kinjoCoral)
 
             ForEach(items) { item in
                 Button {
@@ -38,7 +38,7 @@ private struct NewsRow: View {
                 Text(item.title)
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(.kinjoText)
-                    .lineLimit(2)
+                    .lineLimit(3)
                     .multilineTextAlignment(.leading)
 
                 HStack(spacing: 8) {

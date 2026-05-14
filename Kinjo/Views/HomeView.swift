@@ -15,6 +15,7 @@ struct HomeView: View {
     @State private var uvData: UVData?
     @State private var stores: [StoreItem] = []
     @State private var isLoading = true
+    @State private var loadedCity = ""
 
     private let api = APIService.shared
 
@@ -42,6 +43,10 @@ struct HomeView: View {
         .task {
             locationService.requestPermission()
             await loadAll()
+        }
+        .onChange(of: locationService.cityName) { _, newCity in
+            guard !newCity.isEmpty, newCity != "現在地", newCity != loadedCity else { return }
+            Task { await loadAll() }
         }
         .navigationTitle("近所")
         .navigationBarTitleDisplayMode(.inline)
@@ -94,7 +99,7 @@ struct HomeView: View {
         }
 
         if !news.isEmpty {
-            NewsCard(items: Array(news.prefix(3)), title: "近所のニュース")
+            NewsCard(items: Array(news.prefix(20)), title: "近所のニュース")
                 .padding(.horizontal, KinjoSpacing.md)
         }
 
@@ -141,10 +146,6 @@ struct HomeView: View {
                 .padding(.horizontal, KinjoSpacing.md)
         }
 
-        if news.count > 3 {
-            NewsCard(items: Array(news.dropFirst(3)), title: "もっと見る")
-                .padding(.horizontal, KinjoSpacing.md)
-        }
     }
 
     private var safeSummary: some View {
@@ -160,20 +161,30 @@ struct HomeView: View {
 
         let lat = locationService.location?.coordinate.latitude ?? 35.6895
         let lon = locationService.location?.coordinate.longitude ?? 139.6917
-        let city = locationService.cityName
+        let city = locationService.cityName == "現在地" ? "東京" : locationService.cityName
+        loadedCity = city
 
-        do { weather = try await api.fetchWeather(lat: lat, lon: lon) } catch { weather = MockData.weather }
-        do { earthquakes = try await api.fetchEarthquakes() } catch { earthquakes = MockData.earthquakes }
-        do { news = try await api.fetchNews(city: city) } catch { news = MockData.news }
-        do { trains = try await api.fetchTrains() } catch { trains = MockData.trains }
-        do { onThisDay = try await api.fetchOnThisDay() } catch { onThisDay = MockData.onThisDay }
-        do { events = try await api.fetchEvents(city: city) } catch { events = MockData.events }
-        do { uvData = try await api.fetchUV(lat: lat, lon: lon) } catch { uvData = MockData.uv }
-        do { stores = try await api.fetchStores(city: city) } catch { stores = MockData.stores }
-        do { sakura = try await api.fetchSakura(city: city) } catch { sakura = MockData.sakura }
-        do { bikeStations = try await api.fetchBikeShare(lat: lat, lon: lon) } catch { bikeStations = MockData.bikeStations }
+        do { weather = try await api.fetchWeather(lat: lat, lon: lon) } catch { weather = nil }
+        do { earthquakes = try await api.fetchEarthquakes() } catch { earthquakes = [] }
+        do { news = try await api.fetchNews(city: city, limit: 50).filter { isUsableURL($0.url) } } catch { news = [] }
+        do { trains = try await api.fetchTrains() } catch { trains = [] }
+        do { onThisDay = try await api.fetchOnThisDay() } catch { onThisDay = nil }
+        do { events = try await api.fetchEvents(city: city).filter { item in item.url.map { isUsableURL($0) } ?? true } } catch { events = [] }
+        do { uvData = try await api.fetchUV(lat: lat, lon: lon) } catch { uvData = nil }
+        do { stores = try await api.fetchStores(city: city).filter { isUsableURL($0.link) } } catch { stores = [] }
+        do {
+            let fetched = try await api.fetchSakura(city: city)
+            let usableItems = fetched.items.filter { isUsableURL($0.link) }
+            sakura = SakuraData(season: fetched.season, keyword: fetched.keyword, items: usableItems)
+        } catch { sakura = nil }
+        do { bikeStations = try await api.fetchBikeShare(lat: lat, lon: lon) } catch { bikeStations = [] }
 
         isLoading = false
+    }
+
+    private func isUsableURL(_ value: String) -> Bool {
+        guard let url = URL(string: value), let host = url.host?.lowercased() else { return false }
+        return !host.contains("example.com") && (url.scheme == "http" || url.scheme == "https")
     }
 }
 
